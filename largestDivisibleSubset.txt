@@ -1,0 +1,39 @@
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n=nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>>maxWhenItsSmallest(n);
+        vector<int>dp(n);
+        dp[n-1]=1;
+        maxWhenItsSmallest[n-1]={nums[n-1]};
+        int ansLen=0,ansIndex=n-1;
+
+
+        for(int i=n-2;i>=0;i--){
+            vector<int>temp={nums[i]};
+            int mxSize=-1,index=-1;
+            for(int j=i+1;j<n;j++){
+                if(nums[j]%nums[i]==0){
+                    if(dp[j]>mxSize){
+                        mxSize=dp[j];
+                        index=j;
+                    }
+                }
+            }
+            if(index!=-1){
+                for(auto x:maxWhenItsSmallest[index])
+                    temp.push_back(x);
+            }
+            maxWhenItsSmallest[i]=temp;
+            dp[i]=maxWhenItsSmallest[i].size();
+            if(dp[i]>ansLen){
+                ansLen=dp[i];
+                ansIndex=i;
+            }
+        }
+
+        return maxWhenItsSmallest[ansIndex];
+              
+    }
+};
