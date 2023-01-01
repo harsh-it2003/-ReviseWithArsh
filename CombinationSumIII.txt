@@ -1,0 +1,30 @@
+class Solution {
+public:
+
+    int checkIt(vector<int>&v,int n){
+        for(auto x:v)
+            n-=x;
+        return !n;
+    }
+
+    void generateAndCheckTheSubsets(int curr,vector<int>soFar,vector<vector<int>>&ans,int k,int n){
+        if(soFar.size()==k){
+            if(checkIt(soFar,n))
+                ans.push_back(soFar);
+        }
+        else{
+            for(int i=curr;i<=9;i++){
+                soFar.push_back(i);
+                generateAndCheckTheSubsets(i+1,soFar,ans,k,n);
+                soFar.pop_back();
+            }
+        }
+    }
+
+
+    vector<vector<int>> combinationSum3(int k, int n) {
+        vector<vector<int>>ans;
+        generateAndCheckTheSubsets(1,{},ans,k,n);
+        return ans;
+    }
+};
