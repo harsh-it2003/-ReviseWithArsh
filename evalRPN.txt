@@ -1,0 +1,34 @@
+class Solution {
+public:
+    long long doAccordingly(int a,int b,string operation){
+    long long ans=a*b;
+
+    if(operation=="+")
+        ans=a+b;
+    else if(operation=="-")
+        ans=a-b;
+    else if(operation=="/")
+        ans=a/b;
+
+    return ans;
+    }
+
+
+    int evalRPN(vector<string>& tokens) {
+    stack<long long>s;
+    string operations="+-*/";
+    for(int i=0;i<tokens.size();i++){
+        if(tokens[i].length()>1 || (operations.find(tokens[i][0])>=operations.length())){
+            s.push(stoi(tokens[i]));
+        }
+        else{
+            int op1=s.top(),op2;
+            s.pop();
+            op2=s.top();
+            s.pop();
+            s.push(doAccordingly(op2,op1,tokens[i]));
+        }
+    }
+    return s.top();
+}
+};
