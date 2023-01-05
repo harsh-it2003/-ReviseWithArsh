@@ -1,0 +1,89 @@
+class Solution {
+public:
+
+    int modd=1e9+7;
+
+    void add(long long &a,long long b){
+        a+=b;
+        if(a>=modd)
+            a-=modd;
+    }
+
+
+
+    void dijkstra(vector<long long>&dis,long long source,vector<vector<pair<long long,long long>>>&graph){
+    long long n=(long long)dis.size();
+    multiset<pair<long long,long long>>disNode;
+    dis[source]=0;
+
+    for(long long i=0;i<n;i++){
+        disNode.insert({dis[i],i});
+    }
+
+    while(!disNode.empty()){
+        pair<long long,long long> curr=*disNode.begin();
+        disNode.erase(disNode.begin());
+
+        for(auto x:graph[curr.second]){
+            long long temp=dis[curr.second]+x.second;
+            if(temp<dis[x.first]){
+                disNode.erase({dis[x.first],x.first});
+                dis[x.first]=temp;
+                disNode.insert({dis[x.first],x.first});
+            }
+        }
+    }
+}
+
+
+long long directDis(long long a,long long b,map<pair<long long,long long>,long long>&m){
+    if(m.count({a,b}) || m.count({b,a})){
+        return (m.count({a,b})?m[{a,b}]:m[{b,a}]);
+    }
+    return INT_MAX;
+}
+
+
+    long long countPaths(int n, vector<vector<int>>& roads) {
+        vector<vector<pair<long long,long long>>>graph(n);
+        for(auto x:roads){
+            graph[x[0]].push_back({x[1],x[2]});
+            graph[x[1]].push_back({x[0],x[2]});
+        }
+        vector<long long>dis(n,LLONG_MAX);
+
+        map<pair<long long,long long>,long long>roadConnection;
+
+        for(auto x:roads){
+            roadConnection[{x[0],x[1]}]=x[2];
+        }
+
+        dijkstra(dis,0,graph);
+
+        vector<pair<long long,long long>>disNode(n);
+        for(long long i=0;i<dis.size();i++){
+            disNode[i]={dis[i],i};
+        }
+
+
+        sort(disNode.begin(),disNode.end());
+
+        vector<long long>dp(n); //dp[i] tells the no. of ways for reaching ith node from 0, with the shortest distance
+        dp[0]=1;
+
+        for(long long i=1;i<n;i++){
+            for(long long j=0;j<i;j++){
+                if(disNode[j].first+directDis(disNode[j].second,disNode[i].second,roadConnection)==disNode[i].first){
+                   add(dp[disNode[i].second],dp[disNode[j].second]);
+                }
+            }
+        }
+
+        return dp[n-1];
+
+    }
+
+
+};
+
+

@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        int n=nums.size();
+
+        vector<int>temp=nums;
+        sort(temp.begin(),temp.end());
+
+        int a,b;
+        for(int i=0;i<n;i++){
+            if(temp[i]!=nums[i]){
+                a=i;
+                break;
+            }
+        }
+
+
+        for(int j=n-1;j>=0;j--){
+            if(temp[j]!=nums[j]){
+                b=j;
+                break;
+            }
+        }
+
+        return max(0,b-a+1);
+
+
+    }
+};

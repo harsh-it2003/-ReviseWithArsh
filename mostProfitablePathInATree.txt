@@ -1,0 +1,88 @@
+class Solution {
+private:
+    vector<int>leaves;
+    vector<vector<int>>tree;
+    map<int,int>bobsTiming;
+    vector<int>amountForReachingGate;
+
+
+public:
+
+    void dfsForFindingParent(vector<int>&parent,int curr,vector<int>&vis,int par){
+        vis[curr]=1;
+        parent[curr]=par;
+
+        for(auto x:tree[curr]){
+            if(!vis[x]){
+                dfsForFindingParent(parent,x,vis,curr);
+            }
+        }
+
+        if(tree[curr].size()==1 && curr!=0)
+            leaves.push_back(curr);
+    }
+
+
+    void dfsForFindingProfitLoss(int curr,vector<int>&vis,int time,int profit,vector<int>&amount){
+        vis[curr]=1;
+        int bobReachedAt=(bobsTiming.count(curr)?bobsTiming[curr]:INT_MAX);
+        if(time<bobReachedAt){
+            profit+=amount[curr];
+        }
+        else if(time==bobReachedAt){
+            profit+=amount[curr]/2;
+        }
+
+        amountForReachingGate[curr]=profit;
+
+        for(auto x:tree[curr]){
+            if(!vis[x]){
+                dfsForFindingProfitLoss(x,vis,time+1,profit,amount);
+            }
+        }
+    }
+
+    void fillBobTiming(int bob,vector<int>&parent){
+        bobsTiming[bob]=0;
+        int curr=parent[bob];
+        int time=1;
+        while(curr!=-1){
+            bobsTiming[curr]=time;
+            time++;
+            curr=parent[curr];
+        }
+    }
+
+
+
+    int mostProfitablePath(vector<vector<int>>& edges, int bob, vector<int>& amount) {
+        int n=amount.size();
+
+        tree.resize(n);
+
+        for(auto x:edges){
+            tree[x[0]].push_back(x[1]);
+            tree[x[1]].push_back(x[0]);
+        }
+
+        vector<int>parent(n),vis(n);
+        dfsForFindingParent(parent,0,vis,-1);
+
+        fill(vis.begin(),vis.end(),0);
+
+        fillBobTiming(bob,parent);
+
+        amountForReachingGate.resize(n);
+
+        dfsForFindingProfitLoss(0,vis,0,0,amount);
+
+        int ans=INT_MIN;
+
+        for(auto x:leaves){
+            ans=max(ans,amountForReachingGate[x]);
+        }
+
+        return ans;
+        
+    }
+};

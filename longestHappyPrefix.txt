@@ -1,0 +1,73 @@
+class Solution {
+
+private:
+    long long mod=1e9+7;
+    vector<long long>prefSum;
+
+public:
+
+    long long power(long long a,long long b){
+    if(b==0)
+        return 1;
+    long long ans=power(a,b/2);
+    ans=(ans*ans)%mod;
+
+    if(b%2)
+        ans=(ans*a)%mod;
+
+    return ans;
+}
+
+
+long long toInt(char a){
+    return (long long)(a-'a');
+}
+
+
+long long hasTheSameHash(long long p,long long s){
+    long long first=(prefSum[p]*power(2,s))%mod;
+    long long second=(prefSum.back()-prefSum[s-1]+mod)%mod;
+
+    return (first==second);
+}
+
+
+long long checkActually(long long i,long long j,string &s){
+    for(long long k=0;k<=i;k++){
+        if(s[k]!=s[j+k])
+            return 0;
+    }
+    return 1;
+}
+
+
+string longestPrefix(string s){
+    long long n=s.length();
+    prefSum.resize(n);
+    prefSum[0]=toInt(s[0]);
+
+    for(long long i=1;i<n;i++){
+        prefSum[i]=(toInt(s[i])*power(2,i))%mod;
+    }
+
+    for(long long i=1;i<n;i++){
+        prefSum[i]=(prefSum[i]+prefSum[i-1])%mod;
+    }
+
+    string ans="";
+
+
+    for(long long i=n-2;i>=0;i--){
+        long long suffInd=(n-1)-(i+1)+1;
+        if(hasTheSameHash(i,suffInd) && checkActually(i,suffInd,s)){
+            for(long long j=0;j<=i;j++){
+                ans+=s[j];
+            }
+            return ans;
+        }
+    }
+
+    return ans;
+
+}
+};

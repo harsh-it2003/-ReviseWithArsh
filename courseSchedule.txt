@@ -1,0 +1,35 @@
+class Solution {
+public:
+    bool canFinish(int n, vector<vector<int>>& preq) {
+        vector<vector<int>>graph(n);
+        vector<int>doBefore(n);
+
+        for(auto x:preq){
+            graph[x[1]].push_back(x[0]);
+            doBefore[x[0]]++;
+        }  
+
+        queue<int>canDo;
+        for(int i=0;i<n;i++){
+            if(doBefore[i]==0)
+                canDo.push(i);
+        }
+
+        while(!canDo.empty()){
+            int fr=canDo.front();
+            canDo.pop();
+            for(auto x:graph[fr]){
+                doBefore[x]--;
+                if(doBefore[x]==0)
+                    canDo.push(x);
+            }
+        }
+
+        for(auto x:doBefore)
+            if(x)
+                return 0;
+
+        return 1;
+
+    }
+};
