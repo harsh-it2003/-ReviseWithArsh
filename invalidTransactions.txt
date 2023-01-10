@@ -1,0 +1,71 @@
+class Solution {
+private:
+        vector<vector<string>>v;
+        vector<int>ind;
+public:
+
+    vector<string> parts(string &s){
+        s.push_back(',');
+        int n=s.size();
+        vector<string>v;
+        string curr;
+
+        for(int i=0;i<n;i++){
+            if(s[i]==','){
+                v.push_back(curr);
+                curr.clear();
+            }
+            else{
+                curr+=s[i];
+            }
+        }
+        s.pop_back();
+        return v;
+    }
+
+
+    void findNearestAndDoAccordingly(int i){
+        for(int k=i-1;k>=0;k--){
+            if(v[k][0]==v[i][0] && v[k][3]!=v[i][3] && stoi(v[i][1])-stoi(v[k][1])<=60){
+                ind[stoi(v[i][4])]=1;
+                ind[stoi(v[k][4])]=1;
+            }
+        }
+    }
+
+    static bool cmp(vector<string>a,vector<string>b){
+        return (stoi(a[1])<=stoi(b[1]));
+    }
+
+
+
+    vector<string> invalidTransactions(vector<string>&t) {
+        int n=t.size();
+        ind.resize(n);
+        v.resize(n);
+
+
+        for(int i=0;i<n;i++){
+            v[i]=parts(t[i]);
+            v[i].push_back(to_string(i));
+        }
+
+        sort(v.begin(),v.end(),cmp);
+
+        for(int i=0;i<n;i++){
+            if(stoi(v[i][2])>1000){
+                ind[stoi(v[i][4])]=1;
+            }
+            findNearestAndDoAccordingly(i);
+        }
+
+        vector<string>ans;
+        for(int i=0;i<n;i++){
+            if(ind[i]){
+                ans.push_back(t[i]);
+            }
+        }
+
+        return ans;
+    }
+};

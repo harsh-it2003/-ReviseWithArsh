@@ -1,0 +1,90 @@
+class Solution {
+private:
+        vector<vector<int>>perms;
+        vector<vector<int>>points;
+public:
+
+    int isPresent(int k,vector<int>&v){
+        for(auto x:v)
+            if(x==k)
+                return 1;
+
+        return 0;
+    }
+
+    void permutations(vector<int>curr){
+        if(curr.size()==4){
+            perms.push_back(curr);
+            return;
+        }
+        else{
+            for(int i=0;i<=3;i++){
+                if(!isPresent(i,curr)){
+                    curr.push_back(i);
+                    permutations(curr);
+                    curr.pop_back();
+                }
+            }
+        }
+    }
+
+    int dis(vector<int>a,vector<int>b){
+        return ((a[0]-b[0])*(a[0]-b[0])+(a[1]-b[1])*(a[1]-b[1]));
+    }
+
+    int isPerp(vector<vector<int>>&order,int i){
+        int x1=order[i-1][0],x2=order[i][0],x3=order[i+1][0],y1=order[i-1][1],y2=order[i][1],y3=order[i+1][1];
+
+        if(x2==x1)
+            return (y3==y2);
+        else if(x3==x2)
+            return (y1==y2);
+        else if(y2==y3)
+            return (x2==x1);
+        else if(y2==y1)
+            return (x2==x3);
+        else{
+            return ((y2-y1)*(y3-y2)==(x2-x3)*(x2-x1));
+        }
+    }
+
+    int isSquare(int i){
+        vector<vector<int>>order={points[perms[i][0]],points[perms[i][1]],points[perms[i][2]],points[perms[i][3]]};
+        order.push_back(points[perms[i][0]]);
+        int curr=dis(order[0],order[1]);
+        for(int i=2;i<=4;i++){
+            if(curr!=dis(order[i],order[i-1]))
+                return 0;
+        }
+
+        for(int i=1;i<=3;i++){
+            if(isPerp(order,i)==0)
+                return 0;
+        }
+        return 1;
+    }
+
+
+    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+        points.push_back(p1);
+        points.push_back(p2);
+        points.push_back(p3);
+        points.push_back(p4);
+
+        permutations({});
+
+        set<vector<int>>s;
+        for(auto x:points)
+            s.insert(x);
+
+        if(s.size()<4)
+            return 0;
+
+        for(int i=0;i<perms.size();i++){
+            if(isSquare(i))
+                return 1;
+        }
+
+        return 0;
+    }
+};

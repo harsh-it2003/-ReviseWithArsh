@@ -1,0 +1,21 @@
+class Solution {
+public:
+    void fun(int &k,int n,int a){
+        while(n%a==0){
+            k++;
+            n/=a;
+        }
+    }
+
+
+
+    int trailingZeroes(int n) {
+        int two=0,five=0;
+        for(int i=1;i<=n;i++){
+            fun(two,i,2);
+            fun(five,i,5);
+        }
+
+        return min(two,five);
+    }
+};

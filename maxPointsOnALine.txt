@@ -1,0 +1,83 @@
+class Solution {
+public:
+    
+    int maxPoints(vector<vector<int>>& points) {
+        int n=points.size();
+        int ans=1;
+        
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                
+                
+                pair<int,int>slope;
+                slope.first=points[i][0]-points[j][0];
+                slope.second=points[i][1]-points[j][1];
+                
+                int temp=1;
+                if(slope.first!=0 && slope.second!=0){
+                    if(slope.first<0){
+                        slope.first*=-1;
+                        slope.second*=-1;
+                    }
+                    
+                    int gcd=__gcd(abs(slope.first),abs(slope.second));
+                    slope.first/=gcd;
+                    slope.second/=gcd;
+                    
+                    for(int k=j;k<n;k++){
+                        
+                        if(k==i)continue;
+                        
+                        pair<int,int>slope2;
+                        slope2.first=points[i][0]-points[k][0];
+                        slope2.second=points[i][1]-points[k][1];
+                        
+                        if(slope2.first<0){
+                            slope2.first*=-1;
+                            slope2.second*=-1;
+                        }
+                        
+                        int gcd=__gcd(abs(slope2.first),abs(slope2.second));
+                        slope2.first/=gcd;
+                        slope2.second/=gcd;
+                        
+                        if(slope==slope2)
+                            temp++;
+                    }
+                    ans=max(temp,ans);
+                }
+                
+                
+                temp=1;
+                if(slope.first==0){
+                    for(int k=j;k<n;k++){
+                        
+                        if(i==k)
+                            continue;
+                        
+                        if(points[i][0]==points[k][0])
+                            temp++;
+                    }
+                    ans=max(ans,temp);
+                }
+                
+                temp=1;
+                if(slope.second==0){
+                    for(int k=j;k<n;k++){
+                        
+                        if(i==k)
+                            continue;
+                        
+                        if(points[i][1]==points[k][1])
+                            temp++;
+                    }
+                    ans=max(temp,ans);
+                }
+            }
+        }
+        
+        return ans;
+        
+        
+    }
+};

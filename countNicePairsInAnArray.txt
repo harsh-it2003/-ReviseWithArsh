@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int rev(int n){
+        string s=to_string(n);
+        reverse(s.begin(),s.end());
+        int ans=stoi(s);
+        return ans;
+    }
+
+
+
+    int countNicePairs(vector<int>& nums) {
+        int n=nums.size();
+        map<int,int>m;
+
+        for(auto &x:nums){
+            x-=rev(x);
+            m[x]++;
+        }
+
+        long long ans=0;
+
+        for(auto x:m){
+            ans=(ans+(long long)((long long)x.second*(x.second-1)/2))%(long long)(1e9+7);
+        }
+
+        return ans;
+
+    }
+};
