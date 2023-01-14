@@ -1,0 +1,90 @@
+class Solution {
+public:
+    int power(int a,int b){
+        if(b==0)
+            return 1;
+        else{
+            int ans=power(a,b/2);
+            ans*=ans;
+            if(b%2)
+                ans*=a;
+
+            return ans;
+        }
+    }
+
+
+    int ofThisMany(int k){
+        return power(10,k);
+    }
+
+
+    int canBeMade(string s,int till){
+        string n=to_string(till);
+        string temp,rem;
+        for(int i=0;i<s.length();i++)
+            temp+=n[i];
+
+        for(int i=s.length();i<n.length();i++){
+            rem+=n[i];
+        }
+
+
+
+        int ans=0;
+        till=(int)n.length()-(int)s.length()-1;
+        for(int i=0;i<=till;i++){
+            ans+=ofThisMany(i);
+        }
+
+
+        if(s<temp){
+            ans+=ofThisMany((int)n.length()-(int)s.length());
+        }
+        else if(s==temp){
+            if(!rem.empty())
+            ans+=(stoi(rem)+1);
+            else 
+            ans++;
+        }
+
+        return ans;
+
+    }
+
+    char toChar(int k){
+        return (char)('0'+k);
+    }
+
+
+
+    string fun(string curr,int rem,int n){
+        if(rem==1)
+            return curr;
+        else{
+            if(!curr.empty())
+                rem--;
+            for(int i=0;i<=9;i++){
+                if(curr.empty() && i==0)
+                    continue;
+                curr+=toChar(i);
+                int temp=canBeMade(curr,n);
+                curr.pop_back();
+                if(temp>=rem){
+                    curr+=toChar(i);
+                    return fun(curr,rem,n);
+                }
+                else
+                    rem-=temp;
+            }
+            return "1";
+        }
+    }
+
+
+    int findKthNumber(int n, int k) {
+        if(k==1)
+        return 1;
+        return stoi(fun("",k,n));
+    }
+};

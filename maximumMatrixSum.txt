@@ -1,0 +1,21 @@
+class Solution {
+public:
+    long long maxMatrixSum(vector<vector<int>>& matrix) {
+        int negs=0,minn=INT_MAX;
+        long long sum=0;
+        for(auto x:matrix){
+            for(auto y:x){
+                minn=min(minn,abs(y));
+                sum+=abs(y);
+                if(y<0)
+                    negs++;
+            }
+        }
+
+        if(negs%2==0)
+            return sum;
+        else
+            return sum-2*minn;
+
+    }
+};

@@ -1,0 +1,60 @@
+class Solution {
+public:
+    int isTranformable(string &a,string &b){
+        int cnt=0;
+        for(int i=0;i<a.size();i++){
+            if(a[i]!=b[i])
+                cnt++;
+        }
+        return (cnt==1?1:0);
+    }
+
+
+
+
+    int minMutation(string startGene, string endGene, vector<string>& bank) {
+        int n=bank.size();
+        if(find(bank.begin(),bank.end(),endGene)==bank.end())
+            return -1;
+
+        int sg=find(bank.begin(),bank.end(),startGene)-bank.begin();
+
+        if(find(bank.begin(),bank.end(),startGene)==bank.end()){
+            sg=bank.size();
+            bank.push_back(startGene);
+            n++;
+        }
+
+
+        vector<vector<int>>graph(n);
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(i!=j && isTranformable(bank[i],bank[j])){
+                    graph[i].push_back(j);
+                }
+            }
+        }
+
+        vector<int>dis(n,-1);
+        queue<int>q;
+        q.push(sg);
+        dis[sg]=0;
+        while(!q.empty()){
+            int front=q.front();
+            q.pop();
+            for(auto x:graph[front]){
+                if(dis[x]==-1){
+                    q.push(x);
+                    dis[x]=dis[front]+1;
+                }
+            }
+        }
+
+        for(int i=0;i<n;i++){
+            if(bank[i]==endGene)
+                return dis[i];
+        }
+        return -1;
+
+    }
+};

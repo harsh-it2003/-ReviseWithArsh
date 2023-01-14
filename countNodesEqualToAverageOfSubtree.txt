@@ -1,0 +1,32 @@
+class Solution {
+public:
+
+    //vector<int>ans(sum,noOfNodesInTheSubtree,ansInTheSubtree)
+    vector<int> fun(TreeNode *curr){
+        if(curr->left==NULL && curr->right==NULL){
+            vector<int>ans={curr->val,1,1};
+            return ans;
+        }
+        else{
+            vector<int>ans={curr->val,1,0};
+            vector<int>ans1(3),ans2(3);
+            if(curr->left!=NULL){
+                ans1=fun(curr->left);
+            }
+            if(curr->right!=NULL){
+                ans2=fun(curr->right);
+            }
+            for(int i=0;i<3;i++)
+                ans[i]+=(ans1[i]+ans2[i]);
+            if(ans[0]/ans[1]==curr->val)
+                ans[2]++;
+            return ans;
+        }
+    }
+
+
+    int averageOfSubtree(TreeNode* root) {
+        vector<int>ans=fun(root);
+        return ans[2];
+    }
+};

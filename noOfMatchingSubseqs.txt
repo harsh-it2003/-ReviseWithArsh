@@ -1,0 +1,50 @@
+class Solution {
+private:
+    map<int,vector<int>>m;
+public:
+    int findClosest(int ind,char ch){
+        int c=(int)(ch-'a');
+        // cout<<c<<endl;
+        if(m.count(c)==0)
+            return -1;
+
+        int l=0,h=(int)m[c].size()-1;
+        while(l<=h){
+            int mid=(l+h)/2;
+            if(m[c][mid]<=ind)
+                l=mid+1;
+            else
+                h=mid-1;
+        }
+        return (l>=m[c].size()?-1:m[c][l]);
+    }
+
+
+    int isSubseq(string &s){
+        int currInd=-1;
+        for(auto x:s){
+            currInd=findClosest(currInd,x);
+            if(currInd==-1)
+                return 0;
+        }
+        return 1;
+    }
+
+
+    int numMatchingSubseq(string s, vector<string>& words) {
+        int n=s.length();
+
+        for(int i=0;i<n;i++){
+            m[(int)(s[i]-'a')].push_back(i);
+        }
+
+        int cnt=0;
+        for(auto x:words){
+            if(isSubseq(x))
+                cnt++;
+        }
+
+        return cnt;
+
+    }
+};

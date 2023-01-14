@@ -1,0 +1,45 @@
+class Solution {
+public:
+    char toChar(int a){
+        return char('0'+a);
+    }
+
+
+    string fractionToDecimal(int p, int q) {
+        long long yes=( (long long)p*q >= 0 ? 0 : 1);
+
+        long long pp=abs((long long)p);
+        long long qq=abs((long long)q);
+
+        string ans=to_string(pp/qq);
+        long long curr=(pp%qq)*10;
+        map<int,int>currHasHadBeen;
+        int ind=-1;
+
+        if(curr)
+            ans+='.';
+        while(curr){
+            if(currHasHadBeen.count(curr)){
+                ind=currHasHadBeen[curr];
+                break;
+            }
+            currHasHadBeen[curr]=ans.length();
+            ans+=toChar(curr/qq);
+            curr=(curr%qq)*10;
+        }
+
+        string realAns;
+        if(yes && ans!="0")
+            realAns+='-';
+        for(int i=0;i<ans.length();i++){
+            if(i==ind){
+                realAns+='(';
+            }
+            realAns+=ans[i];
+        }
+        if(ind!=-1)
+            realAns+=')';
+
+        return realAns;
+    }
+};

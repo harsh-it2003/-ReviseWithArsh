@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int toInt(char c){
+        return (int)(c-'0');
+    }
+
+
+    int magicalString(int n) {
+        if(n<=3)
+            return 1;
+        string s="122";
+        int pt=2;
+        char curr='1';
+        while(s.length()<=n){
+            for(int i=0;i<toInt(s[pt]);i++){
+                s.push_back(curr);
+            }
+            if(curr=='1')
+                curr='2';
+            else 
+                curr='1';
+            pt++;
+        }
+        cout<<s<<endl;
+        return count(s.begin(),s.begin()+n,'1');
+    }
+};
